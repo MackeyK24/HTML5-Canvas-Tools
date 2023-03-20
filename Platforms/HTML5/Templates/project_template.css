@@ -1,0 +1,233 @@
+/* CSS style sheet used with Epic Games HTML5 projects
+ *
+ * much of this is for UE4 development purposes.
+ *
+ * to create a custom CSS file for your project:
+ * - make a copy of this file - or make one from scratch
+ * - and put it in: "your project folder"/Platforms/HTML5/Templates/project_template.css
+ */
+ 
+  html, body, .container {
+	position: absolute;
+	min-height: 100%;
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	touch-action: none;
+	font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
+	background-color: %BACKGROUNDCOLOR%;
+}
+
+.h4, h4 {
+	margin-top: 1pt;
+	margin-bottom: 1pt;
+	font-size: 10pt;
+}
+
+.container {
+	display: table;
+	vertical-align: middle;
+	border: 0px;
+	border-spacing: 0px;
+}
+
+.glyphicon-spin {
+	animation: spin 2000ms infinite linear;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(359deg);
+	}
+}
+
+@-webkit-keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(359deg);
+	}
+}
+
+.wrapper {
+	position: relative;
+	margin: 0 auto 0 auto;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	min-width: 100%;
+	max-width: 100%;
+	min-height: 100%;
+	max-height: 100%;
+	display: block;
+	align-items: center;
+	position: relative;
+	text-align: center;
+	justify-content: center;
+}
+
+.emscripten {
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+
+	-webkit-box-align: center;
+	-moz-box-align: center;
+	box-align: center;
+
+	-webkit-box-pack: center;
+	-moz-box-pack: center;
+	box-pack: center;
+	
+	outline: none;
+}
+
+#canvas:not([fullscreen]) {
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	height: 100%;
+}
+
+.texthalf {
+	height: 37%;
+	border: 0px;
+	padding: 0px;
+	overflow-y: scroll;
+	font-size: 2em;
+}
+
+.buttonarea {
+	position: relative;
+	top: -50px;
+	border-top: 0px;
+	border-bottom: 0px;
+	padding: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	min-height: 35px;
+}
+
+.btn { padding: 3px; text-align: center; min-width: 150px; max-height: 25px; margin-top: 10px; margin-bottom: 10px; margin-left: 5px; margin-right: 5px; }
+.progress { background: rgba(245, 245, 245, 1); border: 0px solid rgba(245, 245, 245, 1); border-radius: 0px; height: 4px; }
+.progress-bar-custom { background: rgba(153, 153, 153, 1); }
+.centered-axis-xy {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.hidden {
+	display: none;
+}
+
+.load {
+	border: 4px solid #F3F3F3;
+	border-top: 4px solid #00FF00;
+	border-radius: 50%;
+	width: 90px;
+	height: 90px;
+	z-index: 1001;
+	animation: spin 2s linear infinite;
+}
+
+#proj {
+	margin: 0px;
+	padding: 0px;
+	padding-bottom: 14px;
+	z-index: 1001;
+	font-size: 15px;
+	text-align: center;
+	color: #F3F3F3;
+	outline: none;
+	overflow: hidden;
+}
+
+#details {
+	margin: 0px;
+	padding: 0px;
+	padding-top: 14px;
+	z-index: 1001;
+	font-size: 12px;
+	text-align: center;
+	color: #F3F3F3;
+	outline: none;
+	overflow: hidden;
+}
+
+#status {
+	position: absolute;
+	top: 50%;
+	left:50%;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 7px;
+	z-index: 1001;
+	width: 100px;
+	min-width: 100px;
+	margin-top: -10px;
+	margin-left: -50px;
+	font-size: 11px;
+	text-align: center;
+	color: #F3F3F3;
+	outline: none;
+	overflow: hidden;
+}
+
+.fullscreenbutton {
+	position: absolute;
+	top: -2px;
+	left: -24px;
+	border-top: 0px;
+	border-bottom: 0px;
+	padding: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	min-height: 35px;
+}
+
+/* these styles convert the "blue buttons" into transparent buttons which are more subtle and less distracting */
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+	background-color: transparent;
+	border-color: transparent;
+	outline: none;
+}
+.btn-primary {
+	color: rgba(150, 150, 150, 150);
+}
+.btn-primary:hover {
+	color: rgba(200, 200, 200, 200);
+}
+.btn-primary:focus {
+	color: rgba(225, 225, 225, 225);
+}
+.btn-primary:active {
+	color: rgba(250, 250, 250, 250);
+	outline: none !important;
+	box-shadow: none;
+}
+
+/** these styles hide the text on each button, leaving just the icon */
+.buttontext {
+	display: none;
+}
+.btn {
+	min-width: 30px;
+	margin-left: 30px; margin-right: 30px;
+}

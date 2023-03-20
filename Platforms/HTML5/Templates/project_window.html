@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<!--
+     HTML code used with Epic Games HTML5 projects
+
+     much of this is for UE4 development purposes.
+
+     to create a custom HTML file for your project:
+     - make a copy of this file - or make one from scratch
+     - and put it in: "your project folder"/Platforms/HTML5/Templates/project_window.html
+-->
+
+<html lang="en">
+<head>
+	<title>%SHORTNAME%</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body, .container {
+      position: absolute;
+      min-height: 100%;
+      width: 100%;
+      height: 100%;
+      padding: 0px;
+      margin: 0px;
+      overflow: hidden;
+      touch-action: none;
+      font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
+      background-color: %BACKGROUNDCOLOR%;
+    }
+    iframe {
+      border:none;
+    }
+  </style>
+</head>
+<body>
+    <iframe id="gameWindow" width="100%" height="100%" scrolling="no" frameBorder="0" src="#"></iframe>
+    <script type="text/javascript">
+      window.getUrlParameter = (name) => {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          var results = regex.exec(window.location.search);
+          return (results !== null) ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : null;
+      };
+    </script>
+    <script type="text/javascript">
+      window.gameWindow = document.getElementById("gameWindow");
+      window.loadGameWindowScene = function (name) {
+        var gameWindowUrl = (name + ".html" + window.location.search);
+        if (window.gameWindow != null) {
+          if (window.gameWindow.contentWindow != null) window.gameWindow.contentWindow.location.replace(gameWindowUrl);
+          else window.gameWindow.src = gameWindowUrl;
+        }
+      };
+      window.loadGameWindowScene(("" + (window.getUrlParameter("scene") || "%ENTRYGROUPNAME%")));
+     </script>
+</body>
+</html>

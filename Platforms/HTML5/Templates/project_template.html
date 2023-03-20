@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<!--
+     HTML code used with Epic Games HTML5 projects
+
+     much of this is for UE4 development purposes.
+
+     to create a custom HTML file for your project:
+     - make a copy of this file - or make one from scratch
+     - and put it in: "your project folder"/Platforms/HTML5/Templates/project_template.html
+-->
+
+<html lang="en">
+<head>
+	<title>%SHORTNAME%</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script> -->
+	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+	<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"> -->
+
+	<script src="jquery-2.1.3.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<link href="bootstrap.min.css" rel="stylesheet">
+
+	<!-- https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/fonts/glyphicons-halflings-regular.woff2 -->
+	<!-- https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/fonts/glyphicons-halflings-regular.woff -->
+	<!-- https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/fonts/glyphicons-halflings-regular.ttf -->
+
+	<link href="%PROJECTNAME%.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper" id="mainarea">
+	<div class="centered-axis-xy" style="min-height: 50px; display:block;" id="compilingmessage">
+        <center>
+            <div id="proj">%PROJECTTITLE%</div>
+            <div id="load" class="load"></div>
+            <div id="status">Loading</div>
+            <div id="details">Downloading Assets</div>
+        </center>
+	</div>
+	<!-- The "tabindex=0" specifier on the canvas is important to allow it to capture keyboard focus when clicking on it with a mouse -->
+	<canvas tabindex=0 id="canvas" class="emscripten" oncontextmenu="event.preventDefault()" style="display:none;">
+</div>
+<div class="fullscreenbutton text-center" id="fullscreenbutton" style="display:none;">
+	<button type="button" class="btn btn-primary" id="fullscreen_request" title="Fullscreen">
+		<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span><span class="buttontext"> Fullscreen</span>
+	</button>
+</div>
+<div class="buttonarea text-center" id="buttonarea" style="display:none;">
+	<button type="button" class="btn btn-primary" onclick="try { Module['pauseMainLoop'](); } catch(e) {console.error(e);}" title="Pause">
+		<span class="glyphicon glyphicon-pause" aria-hidden="true"></span><span class="buttontext"> Pause</span> 
+	</button>
+	<button type="button" class="btn btn-primary" onclick="try { Module['resumeMainLoop'](); } catch(e) {console.error(e);}" title="Resume">
+		<span class="glyphicon glyphicon-play" aria-hidden="true"></span><span class="buttontext"> Resume</span>
+	</button>
+	<!--<button type="button" class="btn btn-primary" onclick="var w = document.getElementById('logwindow'); w.style.display = w.style.display ? '' : 'none';">Toggle Log</button></div>-->
+	<button type="button" class="btn btn-primary" id='clear_indexeddb' onclick="try { deleteIndexedDBStorage(); } catch(e) {console.error(e);}" title="Clear IndexedDB" >
+		<span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span class="buttontext"> Clear IndexedDB</span>
+	</button>
+</div>
+<div class="texthalf text-normal jumbotron " id="logwindow" style='display:none'></div>
+<!-- Mackey Kinard -->
+<script>
+window.addEventListener('message', (event) => {
+	if (event.data != null && event.data.source != null && event.data.source === 'dom') {
+		var JSONdata = event.data;
+		try {
+			if (JSONdata != null && JSONdata.command != null && JSONdata.command !== '') {
+				if (JSONdata.param != null) {
+					var param = JSONdata.param.toString();
+					window.dispatchWindowMessage(JSONdata.command, param, null, null, null, null, null, null, null);
+				} else {
+					var param1 = (JSONdata.param1 != null) ? JSONdata.param1.toString() : null;
+					var param2 = (JSONdata.param2 != null) ? JSONdata.param2.toString() : null;
+					var param3 = (JSONdata.param3 != null) ? JSONdata.param3.toString() : null;
+					var param4 = (JSONdata.param4 != null) ? JSONdata.param4.toString() : null;
+					var param5 = (JSONdata.param5 != null) ? JSONdata.param5.toString() : null;
+					var param6 = (JSONdata.param6 != null) ? JSONdata.param6.toString() : null;
+					var param7 = (JSONdata.param7 != null) ? JSONdata.param7.toString() : null;
+					var param8 = (JSONdata.param8 != null) ? JSONdata.param8.toString() : null;
+					window.dispatchWindowMessage(JSONdata.command, param1, param2, param3, param4, param5, param6, param7, param8);
+				}
+			}
+		} catch (e) {
+			console.warn(e);
+		}
+	}
+}, false);
+window['printToScreen'] = function (message, key, timeout, color) {
+	if (Module._PrintToScreen0 != null) {
+		message = message || '';
+		color = color || '#FFFFFF';
+		var ptr_message = null, ptr_color = null;
+		try {
+			var lenUTF8_message = Module.lengthBytesUTF8(message) + 1;
+			ptr_message = Module._malloc(lenUTF8_message);
+			Module.stringToUTF8(message, ptr_message, lenUTF8_message);
+
+			var lenUTF8_color = Module.lengthBytesUTF8(color) + 1;
+			ptr_color = Module._malloc(lenUTF8_color);
+			Module.stringToUTF8(color, ptr_color, lenUTF8_color);
+
+			Module.ccall('PrintToScreen0', 'null', ['string', 'float', 'float', 'string'], [message, key, timeout, color]);
+		} catch (e) {
+			console.warn(e);
+		}
+		if (ptr_message != null) Module._free(ptr_message);
+		if (ptr_color != null) Module._free(ptr_color);
+	}
+};
+window['getUrlParameter'] = (name) => {
+	var ptr_buffer = null;
+	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+	var results = regex.exec(window.location.search);
+	var rvalue = (results !== null) ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : null;
+	if (rvalue != null) {
+		var lenUTF8_buffer = Module.lengthBytesUTF8(rvalue) + 1;
+		ptr_buffer = Module._malloc(lenUTF8_buffer);
+		Module.stringToUTF8(rvalue, ptr_buffer, lenUTF8_buffer);
+	}
+	return ptr_buffer;
+};
+window['getUrlQueryString'] = () => {
+	var ptr_buffer = null;
+	var rvalue = window.location.search;
+	if (rvalue != null) {
+		var lenUTF8_buffer = Module.lengthBytesUTF8(rvalue) + 1;
+		ptr_buffer = Module._malloc(lenUTF8_buffer);
+		Module.stringToUTF8(rvalue, ptr_buffer, lenUTF8_buffer);
+	}
+	return ptr_buffer;
+};
+window['getModuleHeapSize'] = function () {
+	var result = 0;
+	if (Module.HEAP8 && Module.HEAP8.length) {
+		result = Module.HEAP8.length / (1024 * 1024);
+	}
+	return result;
+};
+window['pauseRenderLoop'] = function () {
+	Module['pauseMainLoop']();
+};
+window['resumeRenderLoop'] = function () {
+	Module['resumeMainLoop']();	
+};
+window['clearIndexedDBStorage'] = function () {
+	try { deleteIndexedDBStorage(); } catch(e) { console.error(e); }
+};
+window['getLocalStorageItem'] = function (key, wnd) {
+	var ptr_buffer = null;
+	try {
+		var result = null;
+		if (wnd != null && wnd === 2) {
+			result = window.top.localStorage.getItem(key);
+		} else if (wnd != null && wnd === 1) {
+			result = window.parent.localStorage.getItem(key);
+		} else {
+			result = window.localStorage.getItem(key);
+		}
+		if (result != null && result !== "") {
+			var lenUTF8_buffer = Module.lengthBytesUTF8(result) + 1;
+			ptr_buffer = Module._malloc(lenUTF8_buffer);
+			Module.stringToUTF8(result, ptr_buffer, lenUTF8_buffer);
+		}
+	} catch(e) {
+		console.error(e);
+	}
+	return ptr_buffer;
+};
+window['setLocalStorageItem'] = function (key, value, wnd) {
+	try {
+		if (wnd != null && wnd === 2) {
+			window.top.localStorage.setItem(key, value);
+		} else if (wnd != null && wnd === 1) {
+			window.parent.localStorage.setItem(key, value);
+		} else {
+			window.localStorage.setItem(key, value);
+		}
+	} catch(e) {
+		console.error(e);
+	}
+};
+window['getSessionStorageItem'] = function (key, wnd) {
+	var ptr_buffer = null;
+	try {
+		var result = null;
+		if (wnd != null && wnd === 2) {
+			result = window.top.sessionStorage.getItem(key);
+		} else if (wnd != null && wnd === 1) {
+			result = window.parent.sessionStorage.getItem(key);
+		} else {
+			result = window.sessionStorage.getItem(key);
+		}
+		if (result != null && result !== "") {
+			var lenUTF8_buffer = Module.lengthBytesUTF8(result) + 1;
+			ptr_buffer = Module._malloc(lenUTF8_buffer);
+			Module.stringToUTF8(result, ptr_buffer, lenUTF8_buffer);
+		}
+	} catch(e) {
+		console.error(e);
+	}
+	return ptr_buffer;
+};
+window['setSessionStorageItem'] = function (key, value, wnd) {
+	try {
+		if (wnd != null && wnd === 2) {
+			window.top.sessionStorage.setItem(key, value);
+		} else if (wnd != null && wnd === 1) {
+			window.parent.sessionStorage.setItem(key, value);
+		} else {
+			window.sessionStorage.setItem(key, value);
+		}
+	} catch(e) {
+		console.error(e);
+	}
+};
+window['requestEnterFullScreen'] = function (elem) {
+	if (elem != null) {
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.webkitRequestFullscreen) { /* Safari */
+			elem.webkitRequestFullscreen();
+		} else if (elem.msRequestFullscreen) { /* IE11 */
+			elem.msRequestFullscreen();
+		}
+	}
+};
+window['requestExitFullScreen'] = function (elem) {
+	if (elem != null) {
+		if (elem.exitFullscreen) {
+			elem.exitFullscreen();
+		} else if (elem.webkitExitFullscreen) { /* Safari */
+			elem.webkitExitFullscreen();
+		} else if (elem.msExitFullscreen) { /* IE11 */
+			elem.msExitFullscreen();
+		}
+	}
+};
+window['parseWindowMessage'] = function (message, origin, wnd) {
+	try {
+		if (message != null && message !== '') {
+			var json = JSON.parse(message);
+			if (json) {
+				if (wnd != null && wnd === 2) {
+					window.top.postMessage(json, (origin || '*'));
+				} else if (wnd != null && wnd === 1) {
+					window.parent.postMessage(json, (origin || '*'));
+				} else {
+					window.postMessage(json, (origin || '*'));
+				}
+			}
+		}
+	} catch (error) {
+		console.warn(error.message);
+	}
+};
+window['dispatchWindowMessage'] = function (command, param1, param2, param3, param4, param5, param6, param7, param8) {
+	if (Module._DispatchWindowMessage0 != null && command != null && command !== '') {
+		var ptr_command = null, ptr_param1 = null, ptr_param2 = null, ptr_param3 = null, ptr_param4 = null, ptr_param5 = null, ptr_param6 = null, ptr_param7 = null, ptr_param8 = null;
+		try {
+			var lenUTF8_command = Module.lengthBytesUTF8(command) + 1;
+			ptr_command = Module._malloc(lenUTF8_command);
+			Module.stringToUTF8(command, ptr_command, lenUTF8_command);
+			if (param1 != null) {
+				var lenUTF8_param1 = Module.lengthBytesUTF8(param1) + 1;
+				ptr_param1 = Module._malloc(lenUTF8_param1);
+				Module.stringToUTF8(param1, ptr_param1, lenUTF8_param1);
+			}
+			if (param2 != null) {
+				var lenUTF8_param2 = Module.lengthBytesUTF8(param2) + 1;
+				ptr_param2 = Module._malloc(lenUTF8_param2);
+				Module.stringToUTF8(param2, ptr_param2, lenUTF8_param2);
+			}
+			if (param3 != null) {
+				var lenUTF8_param3 = Module.lengthBytesUTF8(param3) + 1;
+				ptr_param3 = Module._malloc(lenUTF8_param3);
+				Module.stringToUTF8(param3, ptr_param3, lenUTF8_param3);
+			}
+			if (param4 != null) {
+				var lenUTF8_param4 = Module.lengthBytesUTF8(param4) + 1;
+				ptr_param4 = Module._malloc(lenUTF8_param4);
+				Module.stringToUTF8(param4, ptr_param4, lenUTF8_param4);
+			}
+			if (param5 != null) {
+				var lenUTF8_param5 = Module.lengthBytesUTF8(param5) + 1;
+				ptr_param5 = Module._malloc(lenUTF8_param5);
+				Module.stringToUTF8(param5, ptr_param5, lenUTF8_param5);
+			}
+			if (param6 != null) {
+				var lenUTF8_param6 = Module.lengthBytesUTF8(param6) + 1;
+				ptr_param6 = Module._malloc(lenUTF8_param6);
+				Module.stringToUTF8(param6, ptr_param6, lenUTF8_param6);
+			}
+			if (param7 != null) {
+				var lenUTF8_param7 = Module.lengthBytesUTF8(param7) + 1;
+				ptr_param7 = Module._malloc(lenUTF8_param7);
+				Module.stringToUTF8(param7, ptr_param7, lenUTF8_param7);
+			}
+			if (param8 != null) {
+				var lenUTF8_param8 = Module.lengthBytesUTF8(param8) + 1;
+				ptr_param8 = Module._malloc(lenUTF8_param8);
+				Module.stringToUTF8(param8, ptr_param8, lenUTF8_param8);
+			}
+			Module.ccall('DispatchWindowMessage0', 'null', ['string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string'], [command, param1, param2, param3, param4, param5, param6, param7, param8]);
+		} catch (e) {
+			console.warn(e);
+		}
+		if (ptr_command != null) Module._free(ptr_command);
+		if (ptr_param1 != null) Module._free(ptr_param1);
+		if (ptr_param2 != null) Module._free(ptr_param2);
+		if (ptr_param3 != null) Module._free(ptr_param3);
+		if (ptr_param4 != null) Module._free(ptr_param4);
+		if (ptr_param5 != null) Module._free(ptr_param5);
+		if (ptr_param6 != null) Module._free(ptr_param6);
+		if (ptr_param7 != null) Module._free(ptr_param7);
+		if (ptr_param8 != null) Module._free(ptr_param8);
+	}
+};
+</script>
+<script src="%PROJECTNAME%.UE4.js"></script>
+</body>
+</html>

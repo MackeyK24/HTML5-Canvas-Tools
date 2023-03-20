@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "HTML5 Canvas Tools",
+	"Description": "Web Game Development Library",
+	"Category": "Tools",
+	"CreatedBy": "Mackey Kinard",
+	"CreatedByURL": "https://github.com/MackeyK24/HTML5-Canvas-Tools",
+	"DocsURL": "https://github.com/MackeyK24/HTML5-Canvas-Tools",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "4.27.0",
+	"CanContainContent": true,
+	"EnabledByDefault": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "HtmlCanvasTools",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
