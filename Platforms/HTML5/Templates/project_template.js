@@ -63,7 +63,7 @@ var Module = {
 
 	assetDownloadProgress: {}, // Track how many bytes of each needed asset has been downloaded so far.
 
-	UE4_indexedDBName: 'UE4_assetDatabase_%SHORTNAME%', // this should be an ascii ID string without special characters that is unique to the project that is being packaged
+	UE4_indexedDBName: 'UE4_%IDBNAME%', // this should be an ascii ID string without special characters that is unique to the project that is being packaged
 	UE4_indexedDBVersion: %IDBVERSION%, // Bump this number to invalidate existing IDB storages in browsers.
 };
 
@@ -848,6 +848,11 @@ function reportDownloadProgress(url, downloadedBytes, totalBytes, finished) {
 		aggregated.total += Module['assetDownloadProgress'][i].total;
 		aggregated.finished = aggregated.finished && Module['assetDownloadProgress'][i].finished;
 	}
+
+	// Mackey Kinard
+	if (aggregated.current > aggregated.total) {
+		aggregated.total = aggregated.current;
+	}	
 
 	aggregated.currentShow = formatBytes(aggregated.current);
 	aggregated.totalShow = formatBytes(aggregated.total);
