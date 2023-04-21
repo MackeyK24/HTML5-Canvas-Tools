@@ -46,7 +46,8 @@
     <script type="text/javascript">
       window.gameWindow = document.getElementById("gameWindow");
       window.loadGameWindowScene = function (name) {
-        var gameWindowUrl = (name + ".html" + window.location.search);
+        var pathPrefix = (!window.location.pathname.endsWith('/') && !window.location.pathname.includes('.')) ? (window.location.pathname + "/") : "";
+        var gameWindowUrl = (pathPrefix + name + ".html" + window.location.search);
         if (window.gameWindow != null) {
           if (window.gameWindow.contentWindow != null) window.gameWindow.contentWindow.location.replace(gameWindowUrl);
           else window.gameWindow.src = gameWindowUrl;
