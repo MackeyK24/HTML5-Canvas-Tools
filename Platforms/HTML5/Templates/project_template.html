@@ -10,6 +10,7 @@
      - and put it in: "your project folder"/Platforms/HTML5/Templates/project_template.html
 -->
 
+
 <html lang="en">
 <head>
 	<title>%SHORTNAME%</title>
@@ -237,6 +238,21 @@ window['requestExitFullScreen'] = function (elem) {
 		} else if (elem.msExitFullscreen) { /* IE11 */
 			elem.msExitFullscreen();
 		}
+	}
+};
+window['executeConsoleCommand'] = function (command) {
+	if (Module._ExecuteConsoleCommand0 != null) {
+		command = command || '';
+		var ptr_command = null;
+		try {
+			var lenUTF8_command = Module.lengthBytesUTF8(command) + 1;
+			ptr_command = Module._malloc(lenUTF8_command);
+			Module.stringToUTF8(command, ptr_command, lenUTF8_command);
+			Module.ccall('ExecuteConsoleCommand0', 'null', ['string'], [command]);
+		} catch (e) {
+			console.warn(e);
+		}
+		if (ptr_command != null) Module._free(ptr_command);
 	}
 };
 window['parseWindowMessage'] = function (message, origin, wnd) {

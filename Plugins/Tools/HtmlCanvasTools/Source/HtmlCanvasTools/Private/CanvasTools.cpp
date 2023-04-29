@@ -382,6 +382,12 @@ extern "C" void EMSCRIPTEN_KEEPALIVE PrintToScreen0(char* message, int key, floa
     UCanvasTools::PrintToScreen(inputString, key, timeout, FColor::FromHex(inputHexColor));
 }
 
+extern "C" void EMSCRIPTEN_KEEPALIVE ExecuteConsoleCommand0(char* command)
+{
+    FString inputString(command);       // Note: This converts the char* message from JavaScript to a UE4 FString
+    UCanvasTools::ExecuteConsoleCommand(inputString);
+}
+
 extern "C" void EMSCRIPTEN_KEEPALIVE DispatchWindowMessage0(char* command, char* param1, char* param2, char* param3, char* param4, char* param5, char* param6, char* param7, char* param8)
 {
     FString inputString(command);       // Note: This converts the char* command from JavaScript to a UE4 FString
