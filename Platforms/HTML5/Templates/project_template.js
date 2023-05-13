@@ -6,7 +6,6 @@
 // - make a copy of this file - or make one from scratch
 // - and put it in: "your project folder"/Platforms/HTML5/Templates/project_template.js
 
-
 // ================================================================================
 // ================================================================================
 // stubbing in missing/un-supported functions
@@ -280,8 +279,8 @@ var canvasWindowedUseHighDpi = true;
 // If canvasWindowedScaleMode == 2 (ASPECT), this size defines only the aspect ratio
 //                                           that the canvas will be constrained to.
 // If canvasWindowedScaleMode == 1 (STRETCH), these size values are ignored.
-var canvasAspectRatioWidth = 1920;
-var canvasAspectRatioHeight = 1080;
+var canvasAspectRatioWidth = 1280; // 1920; // 1366;
+var canvasAspectRatioHeight = 720; // 1080; // 768
 
 // The resizeCanvas() function recomputes the canvas size on the page as the user changes
 // the browser window size.
